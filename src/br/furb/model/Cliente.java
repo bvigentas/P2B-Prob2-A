@@ -1,4 +1,4 @@
-package problema2;
+package br.furb.model;
 
 /*
  * Esta classe oferece as funcionalidades básicas para atender ao Problema 2.

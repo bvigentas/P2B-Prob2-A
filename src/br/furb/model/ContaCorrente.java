@@ -1,4 +1,4 @@
-package problema2;
+package br.furb.model;
 
 
 import java.util.ArrayList;

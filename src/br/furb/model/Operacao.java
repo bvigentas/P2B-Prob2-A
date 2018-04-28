@@ -1,7 +1,7 @@
-package problema2;
+package br.furb.model;
 
 
-import problema2.ContaCorrente;
+import br.furb.model.ContaCorrente;
 import java.text.DateFormat;
 import java.util.Date;
 
