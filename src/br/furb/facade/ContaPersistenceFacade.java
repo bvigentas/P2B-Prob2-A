@@ -1,8 +1,6 @@
 package br.furb.facade;
 
 import br.furb.model.ContaCorrente;
-import br.furb.persistence.factory.ContaPersistenceFactory;
-import br.furb.persistence.factory.IPersistentPojoFactory;
 
 /**
  *
@@ -10,9 +8,7 @@ import br.furb.persistence.factory.IPersistentPojoFactory;
  */
 public class ContaPersistenceFacade extends AbstractPersistenceFacade<ContaCorrente> {
 
-    @Override
-    public IPersistentPojoFactory getFactoryInstance() {
-        return new ContaPersistenceFactory();
+    public ContaPersistenceFacade() {
+        super(ContaCorrente.class);
     }
-    
 }

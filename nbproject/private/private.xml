@@ -3,9 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/bvigentas/Documents/NetBeansProjects/Programa2/src/br/furb/view/MainView.java</file>
-            <file>file:/C:/Users/bvigentas/Documents/NetBeansProjects/Programa2/src/br/furb/view/StantardFormCad.java</file>
-            <file>file:/C:/Users/bvigentas/Documents/NetBeansProjects/Programa2/src/br/furb/model/Cliente.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/factory/ClientePersistenceFactory.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/factory/ContaPersistenceFactory.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/facade/ContaPersistenceFacade.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/factory/IPersistentPojoFactory.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/memory/ClienteMemoryPersistence.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/memory/ContaMemoryPersistence.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/facade/ClientePersistenceFacade.java</file>
         </group>
     </open-files>
 </project-private>

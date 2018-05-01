@@ -1,8 +1,8 @@
 package br.furb.facade;
 
+import br.furb.config.SystemConfig;
 import br.furb.model.AbstractPersistentPojo;
 import br.furb.persistence.IPersistence;
-import br.furb.persistence.factory.IPersistentPojoFactory;
 import java.util.List;
 
 /**
@@ -14,11 +14,9 @@ public abstract class AbstractPersistenceFacade<T extends AbstractPersistentPojo
     
     private final IPersistence persistence;
     
-    public AbstractPersistenceFacade() {
-        this.persistence = getFactoryInstance().getPersistenceImpl();
+    public AbstractPersistenceFacade(Class<T> persistentPojoClass) {
+        this.persistence = SystemConfig.getPersistenceFactory().getPersistence(persistentPojoClass);
     }
-    
-    public abstract IPersistentPojoFactory getFactoryInstance();
     
     public void save(T t) throws IllegalArgumentException {
         this.persistence.save(t);

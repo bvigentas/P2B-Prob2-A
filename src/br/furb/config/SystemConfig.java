@@ -1,20 +1,20 @@
 package br.furb.config;
 
+import br.furb.persistence.factory.IPersistenceFactory;
+import br.furb.persistence.factory.MemoryPersistenceFactory;
+
 /**
  *
  * @author Ruan Schuartz Russi
  */
 public class SystemConfig {
     
-    public enum SystemPersistenceType {
-        MEMORY;
-    }
+    private static IPersistenceFactory persistenceFactory;
     
-    /*
-     * @return Tipo de persistencia utilizada pelo sistema. 
-     */
-    public static SystemPersistenceType getPersistenceType() {
-        return SystemPersistenceType.MEMORY;
+    public static IPersistenceFactory getPersistenceFactory() {
+        if (SystemConfig.persistenceFactory == null) {
+            SystemConfig.persistenceFactory = new MemoryPersistenceFactory();
+        }
+        return SystemConfig.persistenceFactory;
     }
-    
 }
