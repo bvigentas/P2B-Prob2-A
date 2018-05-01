@@ -11,7 +11,7 @@ import java.util.HashMap;
  *
  * @author marcel
  */
-public abstract class Cliente {
+public abstract class Cliente extends AbstractPersistentPojo {
     private String nome;
     private String telCelular;
     private String telFixo;

@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author marcel
  */
-public class ContaCorrente {
+public class ContaCorrente extends AbstractPersistentPojo {
     private int numero;
     private int agencia;
     private Cliente cliente;

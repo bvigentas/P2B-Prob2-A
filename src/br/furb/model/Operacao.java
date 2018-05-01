@@ -10,7 +10,7 @@ import java.util.Date;
  *
  * @author marcel
  */
-public class Operacao {
+public class Operacao extends AbstractPersistentPojo {
     private double valor;
     private double saldoAnterior;
     private TipoOperacao tipo;

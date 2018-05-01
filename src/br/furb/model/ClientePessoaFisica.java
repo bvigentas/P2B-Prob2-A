@@ -6,7 +6,7 @@ package br.furb.model;
  *
  * @author marcel
  */
-public class ClientePessoaFisica extends Cliente{
+public class ClientePessoaFisica extends Cliente {
     private String cpf;
 
     public ClientePessoaFisica(String nome, String telCelular, String telFixo, String cpf) {
@@ -20,8 +20,5 @@ public class ClientePessoaFisica extends Cliente{
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
-    }
-    
-    
-    
+    }  
 }
