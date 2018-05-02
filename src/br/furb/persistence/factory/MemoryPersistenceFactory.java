@@ -6,6 +6,8 @@ import br.furb.model.ContaCorrente;
 import br.furb.persistence.IPersistence;
 import br.furb.persistence.memory.ClienteMemoryPersistence;
 import br.furb.persistence.memory.ContaMemoryPersistence;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Responsavel por retornar as instancias
@@ -16,12 +18,29 @@ import br.furb.persistence.memory.ContaMemoryPersistence;
  */
 public class MemoryPersistenceFactory implements IPersistenceFactory {
 
+    /**
+     * Evita que mais de uma instancia seja criada. Isso evita
+     * que dados sejam salvos em instancias diferentes.
+     */
+    private static final Map<Class<?>, IPersistence> INSTANCES = new HashMap<>();
+    
     @Override
     public <T extends AbstractPersistentPojo> IPersistence getPersistence(Class<T> persistentPojoClass) {
+        if (MemoryPersistenceFactory.INSTANCES.containsKey(persistentPojoClass)) {
+            return MemoryPersistenceFactory.INSTANCES.get(persistentPojoClass);
+        }
+        
+        IPersistence persistence = null;
+        
         if (persistentPojoClass == Cliente.class)
-            return new ClienteMemoryPersistence();
+            persistence = new ClienteMemoryPersistence();
         else if (persistentPojoClass == ContaCorrente.class)
-            return new ContaMemoryPersistence();
+            persistence = new ContaMemoryPersistence();
+        
+        if (persistence != null) {
+            MemoryPersistenceFactory.INSTANCES.put(persistentPojoClass, persistence);
+            return persistence;
+        }
         
         return null;
     }

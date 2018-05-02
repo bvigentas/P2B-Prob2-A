@@ -1,6 +1,8 @@
 package br.furb.persistence.memory;
 
 import br.furb.model.Cliente;
+import br.furb.model.ClientePessoaFisica;
+import br.furb.model.ClientePessoaJuridica;
 import br.furb.util.StringUtil;
 
 /**
@@ -15,7 +17,20 @@ public class ClienteMemoryPersistence extends AbstractMemoryPersistence<Cliente>
             return Boolean.TRUE;
         }
         
-        return StringUtil.possuemPartesIguais(t.getNome(), filter);
+        Boolean filtro = StringUtil.possuemPartesIguais(t.getNome(), filter) ||
+               StringUtil.possuemPartesIguais(t.getTelCelular(), filter) ||
+               StringUtil.possuemPartesIguais(t.getTelFixo(), filter);
+        
+        if (!filtro) {
+            if (t instanceof ClientePessoaFisica) {
+                filtro = StringUtil.possuemPartesIguais(((ClientePessoaFisica)t).getCpf(), filter);
+            } else {
+                filtro = StringUtil.possuemPartesIguais(((ClientePessoaJuridica)t).getCnpj(), filter) ||
+                         StringUtil.possuemPartesIguais(((ClientePessoaJuridica)t).getServidorJMS(), filter);
+            }
+        }
+        
+        return filtro;
     }
       
 }
