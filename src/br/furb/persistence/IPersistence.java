@@ -1,6 +1,7 @@
 package br.furb.persistence;
 
 import br.furb.model.AbstractPersistentPojo;
+import br.furb.persistence.filter.AbstractPersistenceFilter;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * @author Ruan Schuartz Russi
  * @param <T>
  */
-public interface IPersistence<T extends AbstractPersistentPojo> {
+public interface IPersistence<T extends AbstractPersistentPojo, F extends AbstractPersistenceFilter> {
     
     /**
      * Faz a persistencia de um AbstractPersistentPojo.
@@ -35,7 +36,7 @@ public interface IPersistence<T extends AbstractPersistentPojo> {
      * @throws java.lang.IllegalArgumentException
      * @return Lista de AbstractPersistentPojo persistidos que passem no filtro informado.
      */
-    public List<T> search(String filter);
+    public List<T> search(F filter);
     
     /**
      * Busca um AbstractPersistentPojo pelo id.

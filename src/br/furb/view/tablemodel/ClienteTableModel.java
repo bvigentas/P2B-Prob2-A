@@ -4,29 +4,15 @@ import br.furb.model.Cliente;
 import br.furb.model.ClientePessoaFisica;
 import br.furb.model.ClientePessoaJuridica;
 import java.util.List;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Ruan Schuartz Russi
  */
-public class ClienteTableModel extends DefaultTableModel {
-
-    private List<Cliente> clientes;
+public class ClienteTableModel extends AbstractPersistentTableModel<Cliente> {
 
     public ClienteTableModel(List<Cliente> clientes) {
-        this.clientes = clientes;
-    }
-    
-    public void updateModel(List<Cliente> clientes) {
-        this.clientes = clientes;
-    }
-    
-    @Override
-    public int getRowCount() {
-        if (this.clientes != null)
-            return this.clientes.size();
-        return 0;
+        super(clientes);
     }
 
     @Override
@@ -35,14 +21,9 @@ public class ClienteTableModel extends DefaultTableModel {
     }
 
     @Override
-    public boolean isCellEditable(int i, int i1) {
-        return Boolean.FALSE;
-    }
-
-    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Object value = "??";
-        Cliente cliente = this.clientes.get(rowIndex);
+        Cliente cliente = getObjectAt(rowIndex);
         
         switch (columnIndex) {
             case 0:
@@ -88,10 +69,6 @@ public class ClienteTableModel extends DefaultTableModel {
         }
         return "??";
     }
+  
     
-    
-    
-    public Cliente getClienteAt(int row) {
-        return this.clientes.get(row);
-    }
 }

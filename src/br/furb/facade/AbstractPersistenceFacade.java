@@ -3,14 +3,16 @@ package br.furb.facade;
 import br.furb.config.SystemConfig;
 import br.furb.model.AbstractPersistentPojo;
 import br.furb.persistence.IPersistence;
+import br.furb.persistence.filter.AbstractPersistenceFilter;
 import java.util.List;
 
 /**
  *
  * @author Ruan Schuartz Russi
  * @param <T>
+ * @param <F>
  */
-public abstract class AbstractPersistenceFacade<T extends AbstractPersistentPojo> {
+public abstract class AbstractPersistenceFacade<T extends AbstractPersistentPojo, F extends AbstractPersistenceFilter> {
     
     private final IPersistence persistence;
     
@@ -26,7 +28,7 @@ public abstract class AbstractPersistenceFacade<T extends AbstractPersistentPojo
         this.persistence.remove(id);
     }
     
-    public List<T> search(String filter) {
+    public List<T> search(F filter) {
         return this.persistence.search(filter);
     }
 }

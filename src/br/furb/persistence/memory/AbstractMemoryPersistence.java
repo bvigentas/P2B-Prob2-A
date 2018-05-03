@@ -3,6 +3,7 @@ package br.furb.persistence.memory;
 
 import br.furb.model.AbstractPersistentPojo;
 import br.furb.persistence.IPersistence;
+import br.furb.persistence.filter.AbstractPersistenceFilter;
 import br.furb.util.Guard;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,9 +14,10 @@ import java.util.Map;
  *
  * @author Ruan Schuartz Russi
  * @param <T>
+ * @param <F>
  */
-public abstract class AbstractMemoryPersistence<T extends AbstractPersistentPojo> 
-       implements IPersistence<T> {
+public abstract class AbstractMemoryPersistence<T extends AbstractPersistentPojo, F extends AbstractPersistenceFilter> 
+       implements IPersistence<T, F> {
     
     private final Map<Long, T> persistedObjects;
     private Long idSequence;
@@ -32,7 +34,7 @@ public abstract class AbstractMemoryPersistence<T extends AbstractPersistentPojo
      * @param filter Filtra a ser aplicado no AbstractPersistentPojo.
      * @return Flag indicando se o AbstractPersistentPojo e valido para o filtro.
      */
-    protected abstract Boolean respectFilter(T t, String filter);
+    protected abstract Boolean respectFilter(T t, F filter);
 
     @Override
     public void save(T t) throws IllegalArgumentException {
@@ -53,7 +55,7 @@ public abstract class AbstractMemoryPersistence<T extends AbstractPersistentPojo
     }
 
     @Override
-    public List<T> search(String filter) {
+    public List<T> search(F filter) {
         List<T> results = new ArrayList<>();
         
         for (T t : this.persistedObjects.values()) {

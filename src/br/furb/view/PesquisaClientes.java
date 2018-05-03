@@ -1,7 +1,8 @@
 package br.furb.view;
 
 import br.furb.facade.ClientePersistenceFacade;
-import br.furb.model.Cliente;
+import br.furb.persistence.filter.AbstractPersistenceFilter;
+import br.furb.persistence.filter.ClienteFilter;
 import br.furb.view.tablemodel.ClienteTableModel;
 
 /**
@@ -12,8 +13,10 @@ public class PesquisaClientes extends javax.swing.JFrame implements IDialogClose
 
     private final DialogCadastroCliente dialogManutencao;
     private final ClientePersistenceFacade facade;
+    private final ClienteFilter filter;
     
     public PesquisaClientes() {
+        this.filter = new ClienteFilter();
         this.facade = new ClientePersistenceFacade();
         initComponents();
         this.dialogManutencao = new DialogCadastroCliente(this, Boolean.TRUE, this); 
@@ -22,7 +25,8 @@ public class PesquisaClientes extends javax.swing.JFrame implements IDialogClose
     
     private void atualizarTabelaClientes() {
         ClienteTableModel tableModel = (ClienteTableModel) this.tabelaClientes.getModel();
-        tableModel.updateModel(this.facade.search(this.edtBusca.getText()));
+        this.filter.setFilter(this.edtBusca.getText());
+        tableModel.updateModel(this.facade.search(this.filter));
         tableModel.fireTableDataChanged();
     }
 
@@ -191,7 +195,7 @@ public class PesquisaClientes extends javax.swing.JFrame implements IDialogClose
 
     private void tabelaClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaClientesMouseClicked
         int linha = this.tabelaClientes.rowAtPoint(evt.getPoint());
-        this.dialogManutencao.editarCliente((((ClienteTableModel) this.tabelaClientes.getModel()).getClienteAt(linha)));
+        this.dialogManutencao.editarCliente((((ClienteTableModel) this.tabelaClientes.getModel()).getObjectAt(linha)));
     }//GEN-LAST:event_tabelaClientesMouseClicked
 
     private void btnNovoPessoaJuridicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoPessoaJuridicaActionPerformed

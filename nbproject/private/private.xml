@@ -3,11 +3,21 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/view/ContaSearchScreen.java</file>
-            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/view/AbstractSearchScreen.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/filter/ContaCorrenteFilter.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/view/PesquisaClientes.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/facade/AbstractPersistenceFacade.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/IPersistence.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/facade/ContaPersistenceFacade.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/memory/ClienteMemoryPersistence.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/filter/ClienteFilter.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/memory/AbstractMemoryPersistence.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/view/ContasCliente.java</file>
             <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/config/main/Main.java</file>
-            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/view/SystemScreen.java</file>
-            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/view/ClienteSearchScreen.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/factory/MemoryPersistenceFactory.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/filter/AbstractPersistenceFilter.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/persistence/memory/ContaMemoryPersistence.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/config/SystemConfig.java</file>
+            <file>file:/home/robot/furb/prog2/P2B-Prob2-A/src/br/furb/facade/ClientePersistenceFacade.java</file>
         </group>
     </open-files>
 </project-private>
