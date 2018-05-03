@@ -4,7 +4,6 @@ import br.furb.facade.ClientePersistenceFacade;
 import br.furb.model.Cliente;
 import br.furb.model.ClientePessoaFisica;
 import br.furb.model.ClientePessoaJuridica;
-import br.furb.util.StringUtil;
 
 /**
  *
@@ -12,8 +11,8 @@ import br.furb.util.StringUtil;
  */
 public class DialogCadastroCliente extends javax.swing.JDialog {
     
-    private ClientePersistenceFacade facade;
-    private IDialogCloseCallback callback;
+    private final ClientePersistenceFacade facade;
+    private final IDialogCloseCallback callback;
     private Long idClienteEdicao;
     private Boolean inclusaoPessoaFisica;
     
@@ -26,7 +25,7 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
     }
     
     public void incluirClientePessoaFisica() {
-        this.edtTitle.setText("Inclusao de Cliente (Pessoa Fisica)");
+        this.setTitle("Inclusao de Cliente (Pessoa Fisica)");
         this.edtCpf.setText(null);
         this.edtNome.setText(null);
         this.edtTelCelular.setText(null);
@@ -36,11 +35,12 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
         configurarCamposVisiveisPessoaFisica();
         
         this.inclusaoPessoaFisica = Boolean.TRUE;
+        this.btnContas.setVisible(Boolean.FALSE);
         setVisible(Boolean.TRUE);
     }
     
     public void incluirClientePessoaJuridica() {
-        this.edtTitle.setText("Inclusao de Cliente (Pessoa Juridica)");
+        this.setTitle("Inclusao de Cliente (Pessoa Juridica)");
         this.edtCnpj.setText(null);
         this.edtJms.setText(null);
         this.edtNome.setText(null);
@@ -51,11 +51,12 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
         configurarCamposVisiveisPessoaJuridica();
         
         this.inclusaoPessoaFisica = Boolean.FALSE;
+        this.btnContas.setVisible(Boolean.FALSE);
         setVisible(Boolean.TRUE);
     }
     
     public void editarCliente(Cliente cliente) {
-        this.edtTitle.setText(cliente.getNome());
+        this.setTitle(cliente.getNome());
         this.idClienteEdicao = cliente.getId();
         
         this.edtNome.setText(cliente.getNome());
@@ -79,27 +80,18 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
             this.configurarCamposVisiveisPessoaFisica();
         }
         
+        this.btnContas.setVisible(Boolean.TRUE);
         setVisible(Boolean.TRUE);
     }
     
     private void configurarCamposVisiveisPessoaFisica() {
-        this.lblCnpj.setVisible(Boolean.FALSE);
-        this.edtCnpj.setVisible(Boolean.FALSE);
-        this.lblJMS.setVisible(Boolean.FALSE);
-        this.edtJms.setVisible(Boolean.FALSE);
-    
-        this.lblCpf.setVisible(Boolean.TRUE);
-        this.edtCpf.setVisible(Boolean.TRUE);
+        this.painelPessoaFisica.setVisible(Boolean.TRUE);
+        this.painelPessoaJuridica.setVisible(Boolean.FALSE);
     }
     
     private void configurarCamposVisiveisPessoaJuridica() {
-        this.lblCpf.setVisible(Boolean.FALSE);
-        this.edtCpf.setVisible(Boolean.FALSE);
-        
-        this.lblCnpj.setVisible(Boolean.TRUE);
-        this.edtCnpj.setVisible(Boolean.TRUE);
-        this.lblJMS.setVisible(Boolean.TRUE);
-        this.edtJms.setVisible(Boolean.TRUE);
+        this.painelPessoaJuridica.setVisible(Boolean.TRUE);
+        this.painelPessoaFisica.setVisible(Boolean.FALSE);
     }
     
     @SuppressWarnings("unchecked")
@@ -107,8 +99,6 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        edtTitle = new javax.swing.JLabel();
         lblNome = new javax.swing.JLabel();
         edtNome = new javax.swing.JTextField();
         edtTelCelular = new javax.swing.JTextField();
@@ -117,36 +107,17 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
         lblTelFixo = new javax.swing.JLabel();
         btnSalvar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
+        painelPessoaFisica = new javax.swing.JPanel();
         lblCpf = new javax.swing.JLabel();
         edtCpf = new javax.swing.JTextField();
+        painelPessoaJuridica = new javax.swing.JPanel();
         edtCnpj = new javax.swing.JTextField();
-        lblCnpj = new javax.swing.JLabel();
         edtJms = new javax.swing.JTextField();
+        lblCnpj = new javax.swing.JLabel();
         lblJMS = new javax.swing.JLabel();
+        btnContas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        jPanel2.setBackground(new java.awt.Color(0, 149, 217));
-
-        edtTitle.setForeground(new java.awt.Color(255, 255, 255));
-        edtTitle.setText("Inclusao de Cliente");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(edtTitle)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(edtTitle)
-                .addContainerGap())
-        );
 
         lblNome.setText("Nome");
 
@@ -154,6 +125,8 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
 
         lblTelFixo.setText("Telefone Fixo");
 
+        btnSalvar.setBackground(new java.awt.Color(0, 149, 217));
+        btnSalvar.setForeground(new java.awt.Color(255, 255, 255));
         btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -161,6 +134,8 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
             }
         });
 
+        btnCancelar.setBackground(new java.awt.Color(204, 0, 0));
+        btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -170,24 +145,83 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
 
         lblCpf.setText("CPF");
 
+        javax.swing.GroupLayout painelPessoaFisicaLayout = new javax.swing.GroupLayout(painelPessoaFisica);
+        painelPessoaFisica.setLayout(painelPessoaFisicaLayout);
+        painelPessoaFisicaLayout.setHorizontalGroup(
+            painelPessoaFisicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(painelPessoaFisicaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(painelPessoaFisicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(edtCpf)
+                    .addGroup(painelPessoaFisicaLayout.createSequentialGroup()
+                        .addComponent(lblCpf)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        painelPessoaFisicaLayout.setVerticalGroup(
+            painelPessoaFisicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(painelPessoaFisicaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblCpf)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(edtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         lblCnpj.setText("CNPJ");
 
         lblJMS.setText("JMS");
+
+        javax.swing.GroupLayout painelPessoaJuridicaLayout = new javax.swing.GroupLayout(painelPessoaJuridica);
+        painelPessoaJuridica.setLayout(painelPessoaJuridicaLayout);
+        painelPessoaJuridicaLayout.setHorizontalGroup(
+            painelPessoaJuridicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(painelPessoaJuridicaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(painelPessoaJuridicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(edtCnpj)
+                    .addComponent(edtJms)
+                    .addGroup(painelPessoaJuridicaLayout.createSequentialGroup()
+                        .addGroup(painelPessoaJuridicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblCnpj)
+                            .addComponent(lblJMS))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        painelPessoaJuridicaLayout.setVerticalGroup(
+            painelPessoaJuridicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(painelPessoaJuridicaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblCnpj)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(edtCnpj, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblJMS)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(edtJms, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        btnContas.setBackground(new java.awt.Color(255, 204, 0));
+        btnContas.setForeground(new java.awt.Color(255, 255, 255));
+        btnContas.setText("Contas");
+        btnContas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnContasActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addComponent(painelPessoaFisica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(edtNome)
                     .addComponent(edtTelCelular)
                     .addComponent(edtTelFixo)
-                    .addComponent(edtCpf)
-                    .addComponent(edtCnpj)
-                    .addComponent(edtJms)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblNome)
@@ -196,18 +230,18 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnCancelar))
-                            .addComponent(lblCpf)
-                            .addComponent(lblCnpj)
-                            .addComponent(lblJMS))
-                        .addGap(0, 293, Short.MAX_VALUE)))
+                                .addComponent(btnCancelar)))
+                        .addGap(0, 293, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnContas, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
+            .addComponent(painelPessoaJuridica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addComponent(lblNome)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(edtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -219,23 +253,16 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
                 .addComponent(lblTelFixo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(edtTelFixo, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblCpf)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(edtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblCnpj)
+                .addComponent(painelPessoaFisica, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(edtCnpj, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(painelPessoaJuridica, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(lblJMS)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(edtJms, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalvar)
-                    .addComponent(btnCancelar))
-                .addContainerGap())
+                    .addComponent(btnCancelar)
+                    .addComponent(btnContas))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -281,8 +308,13 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
                 String.format("O cliente %s foi salvo com sucesso.", cliente.getNome()));
     }//GEN-LAST:event_btnSalvarActionPerformed
 
+    private void btnContasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnContasActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnContas;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JTextField edtCnpj;
     private javax.swing.JTextField edtCpf;
@@ -290,14 +322,14 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
     private javax.swing.JTextField edtNome;
     private javax.swing.JTextField edtTelCelular;
     private javax.swing.JTextField edtTelFixo;
-    private javax.swing.JLabel edtTitle;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblCnpj;
     private javax.swing.JLabel lblCpf;
     private javax.swing.JLabel lblJMS;
     private javax.swing.JLabel lblNome;
     private javax.swing.JLabel lblTelCelular;
     private javax.swing.JLabel lblTelFixo;
+    private javax.swing.JPanel painelPessoaFisica;
+    private javax.swing.JPanel painelPessoaJuridica;
     // End of variables declaration//GEN-END:variables
 }

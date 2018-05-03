@@ -1,7 +1,6 @@
 package br.furb.view;
 
 import br.furb.facade.ClientePersistenceFacade;
-import br.furb.persistence.filter.AbstractPersistenceFilter;
 import br.furb.persistence.filter.ClienteFilter;
 import br.furb.view.tablemodel.ClienteTableModel;
 
@@ -16,6 +15,7 @@ public class PesquisaClientes extends javax.swing.JFrame implements IDialogClose
     private final ClienteFilter filter;
     
     public PesquisaClientes() {
+        super("Clientes");
         this.filter = new ClienteFilter();
         this.facade = new ClientePersistenceFacade();
         initComponents();
