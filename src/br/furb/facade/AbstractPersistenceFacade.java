@@ -14,7 +14,7 @@ import java.util.List;
  */
 public abstract class AbstractPersistenceFacade<T extends AbstractPersistentPojo, F extends AbstractPersistenceFilter> {
     
-    private final IPersistence persistence;
+    private final IPersistence<T, F> persistence;
     
     public AbstractPersistenceFacade(Class<T> persistentPojoClass) {
         this.persistence = SystemConfig.getPersistenceFactory().getPersistence(persistentPojoClass);
@@ -30,5 +30,9 @@ public abstract class AbstractPersistenceFacade<T extends AbstractPersistentPojo
     
     public List<T> search(F filter) {
         return this.persistence.search(filter);
+    }
+    
+    public T findById(Long id) {
+        return this.persistence.findById(id);
     }
 }

@@ -1,27 +1,35 @@
 package br.furb.view;
 
 import br.furb.facade.ClientePersistenceFacade;
+import br.furb.facade.ContaPersistenceFacade;
 import br.furb.model.Cliente;
 import br.furb.model.ClientePessoaFisica;
 import br.furb.model.ClientePessoaJuridica;
+import br.furb.persistence.filter.ContaCorrenteFilter;
+import br.furb.view.tablemodel.ContaTableModel;
 
 /**
  *
  * @author Ruan Schuartz Russi
  */
-public class DialogCadastroCliente extends javax.swing.JDialog {
+public class DialogCadastroCliente extends javax.swing.JDialog implements IDialogCloseCallback {
     
-    private final ClientePersistenceFacade facade;
+    private final ClientePersistenceFacade clienteFacade;
+    private final ContaPersistenceFacade contaFacade;
     private final IDialogCloseCallback callback;
     private Long idClienteEdicao;
     private Boolean inclusaoPessoaFisica;
+    private ContaCorrenteFilter contaFilter;
+    private final DialogCadastroConta dialogManutencaoConta;
     
     public DialogCadastroCliente(java.awt.Frame parent, boolean modal, IDialogCloseCallback callback) {
         super(parent, modal);
-        initComponents();
-        this.facade = new ClientePersistenceFacade();
+        this.dialogManutencaoConta = new DialogCadastroConta(parent, true, this);
+        this.clienteFacade = new ClientePersistenceFacade();
+        this.contaFacade = new ContaPersistenceFacade();
         this.callback = callback;
         this.idClienteEdicao = null;
+        initComponents();
     }
     
     public void incluirClientePessoaFisica() {
@@ -35,7 +43,8 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
         configurarCamposVisiveisPessoaFisica();
         
         this.inclusaoPessoaFisica = Boolean.TRUE;
-        this.btnContas.setVisible(Boolean.FALSE);
+        this.tabView.setEnabledAt(1, Boolean.FALSE);
+        this.tabView.setSelectedIndex(0);
         setVisible(Boolean.TRUE);
     }
     
@@ -51,11 +60,13 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
         configurarCamposVisiveisPessoaJuridica();
         
         this.inclusaoPessoaFisica = Boolean.FALSE;
-        this.btnContas.setVisible(Boolean.FALSE);
+        this.tabView.setEnabledAt(1, Boolean.FALSE);
+        this.tabView.setSelectedIndex(0);
         setVisible(Boolean.TRUE);
     }
     
     public void editarCliente(Cliente cliente) {
+        this.contaFilter = new ContaCorrenteFilter(cliente);
         this.setTitle(cliente.getNome());
         this.idClienteEdicao = cliente.getId();
         
@@ -80,8 +91,22 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
             this.configurarCamposVisiveisPessoaFisica();
         }
         
-        this.btnContas.setVisible(Boolean.TRUE);
+        this.tabView.setEnabledAt(1, Boolean.TRUE);
+        this.tabView.setSelectedIndex(1);
+        atualizarTabelaContas();
         setVisible(Boolean.TRUE);
+    }
+    
+    @Override
+    public void execute(String idDialog) {
+        atualizarTabelaContas();
+    }
+    
+    public void atualizarTabelaContas() {
+        ContaTableModel tableModel = (ContaTableModel) this.tabelaContas.getModel();
+        this.contaFilter.setFilter(this.edtBuscaConta.getText());
+        tableModel.updateModel(this.contaFacade.search(this.contaFilter));
+        tableModel.fireTableDataChanged();
     }
     
     private void configurarCamposVisiveisPessoaFisica() {
@@ -98,6 +123,8 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        tabView = new javax.swing.JTabbedPane();
+        tabGeral = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         lblNome = new javax.swing.JLabel();
         edtNome = new javax.swing.JTextField();
@@ -115,7 +142,16 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
         edtJms = new javax.swing.JTextField();
         lblCnpj = new javax.swing.JLabel();
         lblJMS = new javax.swing.JLabel();
-        btnContas = new javax.swing.JButton();
+        tabContas = new javax.swing.JScrollPane();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        edtBuscaConta = new javax.swing.JTextField();
+        btnBuscarConta = new javax.swing.JButton();
+        btnNovaConta = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabelaContas = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -202,15 +238,6 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        btnContas.setBackground(new java.awt.Color(255, 204, 0));
-        btnContas.setForeground(new java.awt.Color(255, 255, 255));
-        btnContas.setText("Contas");
-        btnContas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnContasActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -231,10 +258,7 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
                                 .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnCancelar)))
-                        .addGap(0, 293, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnContas, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 375, Short.MAX_VALUE)))
                 .addContainerGap())
             .addComponent(painelPessoaJuridica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -260,23 +284,124 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalvar)
-                    .addComponent(btnCancelar)
-                    .addComponent(btnContas))
+                    .addComponent(btnCancelar))
+                .addContainerGap(30, Short.MAX_VALUE))
+        );
+
+        tabGeral.setViewportView(jPanel1);
+
+        tabView.addTab("Geral", tabGeral);
+
+        jPanel3.setBackground(new java.awt.Color(0, 149, 217));
+
+        jPanel4.setBackground(new java.awt.Color(0, 95, 164));
+
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Busca");
+
+        btnBuscarConta.setBackground(new java.awt.Color(0, 95, 164));
+        btnBuscarConta.setForeground(new java.awt.Color(0, 95, 164));
+        btnBuscarConta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/furb/view/icons/loupe.png"))); // NOI18N
+        btnBuscarConta.setBorder(null);
+        btnBuscarConta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarContaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(edtBuscaConta, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnBuscarConta)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(edtBuscaConta, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2))
+                    .addComponent(btnBuscarConta, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+
+        btnNovaConta.setBackground(new java.awt.Color(0, 149, 217));
+        btnNovaConta.setForeground(new java.awt.Color(255, 255, 255));
+        btnNovaConta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/furb/view/icons/add (1).png"))); // NOI18N
+        btnNovaConta.setBorder(null);
+        btnNovaConta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovaContaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(111, 111, 111)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(btnNovaConta, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnNovaConta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        tabelaContas.setModel(new ContaTableModel(
+            contaFacade.search(null)));
+    jScrollPane1.setViewportView(tabelaContas);
 
-        pack();
+    javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+    jPanel2.setLayout(jPanel2Layout);
+    jPanel2Layout.setHorizontalGroup(
+        jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(jScrollPane1)
+    );
+    jPanel2Layout.setVerticalGroup(
+        jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanel2Layout.createSequentialGroup()
+            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+    );
+
+    tabContas.setViewportView(jPanel2);
+
+    tabView.addTab("Contas", tabContas);
+
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addComponent(tabView, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(0, 0, Short.MAX_VALUE))
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(tabView)
+    );
+
+    pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -300,7 +425,7 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
             cliente.setId(this.idClienteEdicao);
         }
         
-        this.facade.save(cliente);
+        this.clienteFacade.save(cliente);
         setVisible(Boolean.FALSE);
         this.callback.execute(this.getName());
         
@@ -308,21 +433,32 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
                 String.format("O cliente %s foi salvo com sucesso.", cliente.getNome()));
     }//GEN-LAST:event_btnSalvarActionPerformed
 
-    private void btnContasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContasActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnContasActionPerformed
+    private void btnBuscarContaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarContaActionPerformed
+        this.atualizarTabelaContas();
+    }//GEN-LAST:event_btnBuscarContaActionPerformed
+
+    private void btnNovaContaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovaContaActionPerformed
+        this.dialogManutencaoConta.incluirConta(this.clienteFacade.findById(idClienteEdicao));
+    }//GEN-LAST:event_btnNovaContaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuscarConta;
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton btnContas;
+    private javax.swing.JButton btnNovaConta;
     private javax.swing.JButton btnSalvar;
+    private javax.swing.JTextField edtBuscaConta;
     private javax.swing.JTextField edtCnpj;
     private javax.swing.JTextField edtCpf;
     private javax.swing.JTextField edtJms;
     private javax.swing.JTextField edtNome;
     private javax.swing.JTextField edtTelCelular;
     private javax.swing.JTextField edtTelFixo;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblCnpj;
     private javax.swing.JLabel lblCpf;
     private javax.swing.JLabel lblJMS;
@@ -331,5 +467,10 @@ public class DialogCadastroCliente extends javax.swing.JDialog {
     private javax.swing.JLabel lblTelFixo;
     private javax.swing.JPanel painelPessoaFisica;
     private javax.swing.JPanel painelPessoaJuridica;
+    private javax.swing.JScrollPane tabContas;
+    private javax.swing.JScrollPane tabGeral;
+    private javax.swing.JTabbedPane tabView;
+    private javax.swing.JTable tabelaContas;
     // End of variables declaration//GEN-END:variables
+
 }
