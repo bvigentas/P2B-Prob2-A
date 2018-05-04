@@ -4,10 +4,10 @@ import br.furb.facade.ClientePersistenceFacade;
 import br.furb.facade.ContaPersistenceFacade;
 import br.furb.model.Cliente;
 import br.furb.model.ContaCorrente;
-import br.furb.model.ServicoAnaliseFluxo;
-import br.furb.model.ServicoBaixaAutomatica;
-import br.furb.model.ServicoNotificacao;
-import br.furb.model.ServicoOperacao;
+import br.furb.model.ServicoAnaliseFluxoObserver;
+import br.furb.model.ServicoBaixaAutomaticaObserver;
+import br.furb.model.ServicoNotificacaoObserver;
+import br.furb.model.ServicoObserver;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,13 +36,13 @@ public class DialogCadastroConta extends javax.swing.JDialog {
         this.idContaEdicao = null;
         this.edtAgencia.setText(null);
         this.edtNumero.setText(null);
-        this.edtSaldo.setText(null);
         this.chkServicoAnaliseFluxo.setSelected(Boolean.FALSE);
         this.chkServicoBaixaAutomatica.setSelected(Boolean.FALSE);
         this.chkServicoOperacaoRealizada.setSelected(Boolean.FALSE);
         
-        this.tabView.setEnabledAt(1, Boolean.FALSE);
-        this.tabView.setSelectedIndex(0);
+        this.tabOperacoes.setEnabledAt(1, Boolean.FALSE);
+        this.tabOperacoes.setEnabledAt(2, Boolean.FALSE);
+        this.tabOperacoes.setSelectedIndex(0);
         setVisible(Boolean.TRUE);
     }
     
@@ -51,30 +51,30 @@ public class DialogCadastroConta extends javax.swing.JDialog {
         this.idContaEdicao = contaCorrente.getId();
         this.edtAgencia.setText(String.valueOf(contaCorrente.getAgencia()));
         this.edtNumero.setText(String.valueOf(contaCorrente.getNumero()));
-        this.edtSaldo.setText(String.valueOf(contaCorrente.getSaldo()));
         
         this.chkServicoAnaliseFluxo.setSelected(Boolean.FALSE);
         this.chkServicoBaixaAutomatica.setSelected(Boolean.FALSE);
         this.chkServicoOperacaoRealizada.setSelected(Boolean.FALSE);
         
         if (contaCorrente.getServicosConfigurados() != null) {
-            for (ServicoOperacao servico : contaCorrente.getServicosConfigurados()) {
-                if (servico instanceof ServicoAnaliseFluxo) {
+            for (ServicoObserver servico : contaCorrente.getServicosConfigurados()) {
+                if (servico instanceof ServicoAnaliseFluxoObserver) {
                     this.chkServicoAnaliseFluxo.setSelected(Boolean.TRUE);
                 }
                 
-                if (servico instanceof ServicoBaixaAutomatica) {
+                if (servico instanceof ServicoBaixaAutomaticaObserver) {
                     this.chkServicoBaixaAutomatica.setSelected(Boolean.TRUE);
                 }
                 
-                if (servico instanceof ServicoNotificacao) {
+                if (servico instanceof ServicoNotificacaoObserver) {
                     this.chkServicoOperacaoRealizada.setSelected(Boolean.TRUE);
                 }
             }
         }
         
-        this.tabView.setEnabledAt(1, Boolean.TRUE);
-        this.tabView.setSelectedIndex(1);
+        this.tabOperacoes.setEnabledAt(1, Boolean.TRUE);
+        this.tabOperacoes.setEnabledAt(2, Boolean.TRUE);
+        this.tabOperacoes.setSelectedIndex(1);
         setVisible(Boolean.TRUE);
     }
 
@@ -82,15 +82,14 @@ public class DialogCadastroConta extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tabView = new javax.swing.JTabbedPane();
+        jButton1 = new javax.swing.JButton();
+        tabOperacoes = new javax.swing.JTabbedPane();
         tabGeral = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         lblNumero = new javax.swing.JLabel();
         edtNumero = new javax.swing.JTextField();
         edtAgencia = new javax.swing.JTextField();
         lblAgencia = new javax.swing.JLabel();
-        edtSaldo = new javax.swing.JTextField();
-        lblSaldo = new javax.swing.JLabel();
         btnSalvar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         tabServicos = new javax.swing.JScrollPane();
@@ -98,14 +97,27 @@ public class DialogCadastroConta extends javax.swing.JDialog {
         chkServicoOperacaoRealizada = new javax.swing.JCheckBox();
         chkServicoAnaliseFluxo = new javax.swing.JCheckBox();
         chkServicoBaixaAutomatica = new javax.swing.JCheckBox();
+        jPanel3 = new javax.swing.JPanel();
+        btnSacar = new javax.swing.JButton();
+        btnDepositar = new javax.swing.JButton();
+        btnTransferir = new javax.swing.JButton();
+        edtNumConta = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        edtValor = new javax.swing.JTextField();
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lblNumero.setText("Numero");
 
         lblAgencia.setText("Agencia");
-
-        lblSaldo.setText("Saldo");
 
         btnSalvar.setBackground(new java.awt.Color(0, 149, 217));
         btnSalvar.setForeground(new java.awt.Color(255, 255, 255));
@@ -131,18 +143,15 @@ public class DialogCadastroConta extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(edtSaldo, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(edtAgencia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
-                        .addComponent(lblNumero, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lblAgencia, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lblSaldo, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnCancelar))
-                        .addComponent(edtNumero, javax.swing.GroupLayout.Alignment.LEADING)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblNumero)
+                    .addComponent(lblAgencia)
+                    .addComponent(edtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(edtAgencia, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancelar)))
                 .addContainerGap(104, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -154,22 +163,18 @@ public class DialogCadastroConta extends javax.swing.JDialog {
                 .addComponent(edtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblAgencia)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(edtAgencia, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblSaldo)
+                .addComponent(edtAgencia, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(edtSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSalvar)
-                    .addComponent(btnCancelar))
-                .addContainerGap(259, Short.MAX_VALUE))
+                    .addComponent(btnCancelar)
+                    .addComponent(btnSalvar))
+                .addContainerGap(337, Short.MAX_VALUE))
         );
 
         tabGeral.setViewportView(jPanel1);
 
-        tabView.addTab("Geral", tabGeral);
+        tabOperacoes.addTab("Geral", tabGeral);
 
         chkServicoOperacaoRealizada.setText("Operação Realizada");
 
@@ -203,21 +208,91 @@ public class DialogCadastroConta extends javax.swing.JDialog {
 
         tabServicos.setViewportView(jPanel2);
 
-        tabView.addTab("Servicos", tabServicos);
+        tabOperacoes.addTab("Servicos", tabServicos);
+
+        btnSacar.setBackground(new java.awt.Color(255, 51, 51));
+        btnSacar.setText("Sacar");
+        btnSacar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSacarActionPerformed(evt);
+            }
+        });
+
+        btnDepositar.setBackground(new java.awt.Color(51, 255, 51));
+        btnDepositar.setText("Depositar");
+        btnDepositar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDepositarActionPerformed(evt);
+            }
+        });
+
+        btnTransferir.setBackground(new java.awt.Color(0, 51, 255));
+        btnTransferir.setText("Transferir");
+        btnTransferir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTransferirActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Número da Conta:");
+
+        jLabel2.setText("Valor:");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(123, 123, 123)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(edtNumConta)
+                    .addComponent(edtValor, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnTransferir)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnDepositar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSacar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(141, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSacar)
+                    .addComponent(jLabel2)
+                    .addComponent(edtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDepositar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnTransferir)
+                    .addComponent(jLabel1)
+                    .addComponent(edtNumConta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(387, Short.MAX_VALUE))
+        );
+
+        tabOperacoes.addTab("Operações", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(tabView, javax.swing.GroupLayout.PREFERRED_SIZE, 627, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(tabOperacoes, javax.swing.GroupLayout.PREFERRED_SIZE, 627, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(tabView, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(tabOperacoes, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 22, Short.MAX_VALUE))
         );
 
         pack();
@@ -228,29 +303,31 @@ public class DialogCadastroConta extends javax.swing.JDialog {
                 new ContaCorrente(Integer.parseInt(this.edtNumero.getText()),
                                   Integer.parseInt(this.edtAgencia.getText()));
         
-        this.cliente.addConta(contaCorrente);
-        
         if (this.idContaEdicao != null) {
             contaCorrente.setId(this.idContaEdicao);
+        } else {
+            this.cliente.addConta(contaCorrente);
         }
         
-        List<ServicoOperacao> servicos = new ArrayList<>();
+        List<ServicoObserver> servicos = new ArrayList<>();
         if (this.chkServicoAnaliseFluxo.isSelected()) {
-            servicos.add(new ServicoAnaliseFluxo());
+            servicos.add(new ServicoAnaliseFluxoObserver());
         }
         
         if (this.chkServicoBaixaAutomatica.isSelected()) {
-            servicos.add(new ServicoBaixaAutomatica());
+            servicos.add(new ServicoBaixaAutomaticaObserver());
         }
         
         if (this.chkServicoOperacaoRealizada.isSelected()) {
-            servicos.add(new ServicoNotificacao());
+            servicos.add(new ServicoNotificacaoObserver());
         }
         
         contaCorrente.setServicosConfigurados(servicos);
         
         this.contaFacade.save(contaCorrente);
-        this.clienteFacade.save(cliente);
+        if (this.idContaEdicao != null) {
+            this.clienteFacade.save(cliente);
+        }
         setVisible(Boolean.FALSE);
         this.callback.execute(this.getName());
         
@@ -263,22 +340,50 @@ public class DialogCadastroConta extends javax.swing.JDialog {
         setVisible(Boolean.FALSE);
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnSacarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacarActionPerformed
+        executarServicos();
+    }//GEN-LAST:event_btnSacarActionPerformed
+
+    private void executarServicos(){
+        ContaCorrente contaCorrente = this.contaFacade.findById(this.idContaEdicao);
+        contaCorrente.notifyObservers();
+    }
+    
+    private void btnDepositarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepositarActionPerformed
+        executarServicos();
+    }//GEN-LAST:event_btnDepositarActionPerformed
+
+    private void btnTransferirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferirActionPerformed
+        executarServicos();
+    }//GEN-LAST:event_btnTransferirActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnDepositar;
+    private javax.swing.JButton btnSacar;
     private javax.swing.JButton btnSalvar;
+    private javax.swing.JButton btnTransferir;
     private javax.swing.JCheckBox chkServicoAnaliseFluxo;
     private javax.swing.JCheckBox chkServicoBaixaAutomatica;
     private javax.swing.JCheckBox chkServicoOperacaoRealizada;
     private javax.swing.JTextField edtAgencia;
+    private javax.swing.JTextField edtNumConta;
     private javax.swing.JTextField edtNumero;
-    private javax.swing.JTextField edtSaldo;
+    private javax.swing.JTextField edtValor;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JLabel lblAgencia;
     private javax.swing.JLabel lblNumero;
-    private javax.swing.JLabel lblSaldo;
     private javax.swing.JScrollPane tabGeral;
+    private javax.swing.JTabbedPane tabOperacoes;
     private javax.swing.JScrollPane tabServicos;
-    private javax.swing.JTabbedPane tabView;
     // End of variables declaration//GEN-END:variables
 }

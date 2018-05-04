@@ -19,7 +19,7 @@ public class ContaCorrente extends AbstractPersistentPojo {
     private Cliente cliente;
     private double saldo = 0;
     private List<Operacao> operacoes = new ArrayList();
-    private List<ServicoOperacao> servicosConfigurados;
+    private List<ServicoObserver> servicosConfigurados;
 
     public ContaCorrente(int numero, int agencia) {
         this.setNumero(numero);
@@ -97,12 +97,18 @@ public class ContaCorrente extends AbstractPersistentPojo {
         this.operacoes = operacoes;
     }
 
-    public List<ServicoOperacao> getServicosConfigurados() {
+    public List<ServicoObserver> getServicosConfigurados() {
         return servicosConfigurados;
     }
 
-    public void setServicosConfigurados(List<ServicoOperacao> servicosConfigurados) {
+    public void setServicosConfigurados(List<ServicoObserver> servicosConfigurados) {
         this.servicosConfigurados = servicosConfigurados;
+    }
+    
+    public void notifyObservers(){
+        for(ServicoObserver observer : servicosConfigurados){
+            observer.execute(this);
+        }
     }
     
     @Override
