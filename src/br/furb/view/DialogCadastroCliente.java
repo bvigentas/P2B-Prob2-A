@@ -39,6 +39,8 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
         this.edtTelCelular.setText(null);
         this.edtTelFixo.setText(null);
         this.idClienteEdicao = null;
+        this.chkSms.setSelected(Boolean.FALSE);
+        this.chkWhats.setSelected(Boolean.FALSE);
         
         configurarCamposVisiveisPessoaFisica();
         
@@ -87,6 +89,9 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
             this.edtCpf.setText(((ClientePessoaFisica) cliente).getCpf());
             this.edtCnpj.setText(null);
             this.edtJms.setText(null);
+            
+            this.chkSms.setSelected(((ClientePessoaFisica) cliente).getReceberNotificacoesPorSms());
+            this.chkWhats.setSelected(((ClientePessoaFisica) cliente).getReceberNotificacoesPorWhatsapp());
             
             this.configurarCamposVisiveisPessoaFisica();
         }
@@ -137,6 +142,9 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
         painelPessoaFisica = new javax.swing.JPanel();
         lblCpf = new javax.swing.JLabel();
         edtCpf = new javax.swing.JTextField();
+        chkSms = new javax.swing.JCheckBox();
+        chkWhats = new javax.swing.JCheckBox();
+        jLabel1 = new javax.swing.JLabel();
         painelPessoaJuridica = new javax.swing.JPanel();
         edtCnpj = new javax.swing.JTextField();
         edtJms = new javax.swing.JTextField();
@@ -181,6 +189,12 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
 
         lblCpf.setText("CPF");
 
+        chkSms.setText("SMS");
+
+        chkWhats.setText("WhatsApp");
+
+        jLabel1.setText("Enviar Notificações por");
+
         javax.swing.GroupLayout painelPessoaFisicaLayout = new javax.swing.GroupLayout(painelPessoaFisica);
         painelPessoaFisica.setLayout(painelPessoaFisicaLayout);
         painelPessoaFisicaLayout.setHorizontalGroup(
@@ -190,7 +204,13 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
                 .addGroup(painelPessoaFisicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(edtCpf)
                     .addGroup(painelPessoaFisicaLayout.createSequentialGroup()
-                        .addComponent(lblCpf)
+                        .addGroup(painelPessoaFisicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblCpf)
+                            .addGroup(painelPessoaFisicaLayout.createSequentialGroup()
+                                .addComponent(chkSms)
+                                .addGap(18, 18, 18)
+                                .addComponent(chkWhats))
+                            .addComponent(jLabel1))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -201,7 +221,13 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
                 .addComponent(lblCpf)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(edtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(painelPessoaFisicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkSms)
+                    .addComponent(chkWhats))
+                .addContainerGap())
         );
 
         lblCnpj.setText("CNPJ");
@@ -285,7 +311,7 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalvar)
                     .addComponent(btnCancelar))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         tabGeral.setViewportView(jPanel1);
@@ -367,6 +393,11 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
 
         tabelaContas.setModel(new ContaTableModel(
             contaFacade.search(null)));
+    tabelaContas.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            tabelaContasMouseClicked(evt);
+        }
+    });
     jScrollPane1.setViewportView(tabelaContas);
 
     javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -379,7 +410,7 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
     jPanel2Layout.setVerticalGroup(
         jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(jPanel2Layout.createSequentialGroup()
-            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
     );
@@ -415,6 +446,8 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
         if (this.inclusaoPessoaFisica) {
             cliente = new ClientePessoaFisica(this.edtNome.getText(), 
                     this.edtTelCelular.getText(), this.edtTelFixo.getText(), cpf);
+            ((ClientePessoaFisica)cliente).setReceberNotificacoesPorSms(this.chkSms.isSelected());
+            ((ClientePessoaFisica)cliente).setReceberNotificacoesPorWhatsapp(this.chkWhats.isSelected());
         } else {
             cliente = new ClientePessoaJuridica(this.edtNome.getText(), 
                     this.edtTelCelular.getText(), this.edtTelFixo.getText(),
@@ -441,11 +474,18 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
         this.dialogManutencaoConta.incluirConta(this.clienteFacade.findById(idClienteEdicao));
     }//GEN-LAST:event_btnNovaContaActionPerformed
 
+    private void tabelaContasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaContasMouseClicked
+        int linha = this.tabelaContas.rowAtPoint(evt.getPoint());
+        this.dialogManutencaoConta.editarConta((((ContaTableModel) this.tabelaContas.getModel()).getObjectAt(linha)));
+    }//GEN-LAST:event_tabelaContasMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscarConta;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnNovaConta;
     private javax.swing.JButton btnSalvar;
+    private javax.swing.JCheckBox chkSms;
+    private javax.swing.JCheckBox chkWhats;
     private javax.swing.JTextField edtBuscaConta;
     private javax.swing.JTextField edtCnpj;
     private javax.swing.JTextField edtCpf;
@@ -453,6 +493,7 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
     private javax.swing.JTextField edtNome;
     private javax.swing.JTextField edtTelCelular;
     private javax.swing.JTextField edtTelFixo;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
