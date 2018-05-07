@@ -12,7 +12,7 @@ import br.furb.view.tablemodel.ContaTableModel;
  *
  * @author Ruan Schuartz Russi
  */
-public class DialogCadastroCliente extends javax.swing.JDialog implements IDialogCloseCallback {
+public class DialogCadastroCliente extends AbstractDialog implements IDialogCloseCallback {
     
     private final ClientePersistenceFacade clienteFacade;
     private final ContaPersistenceFacade contaFacade;
@@ -23,7 +23,7 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
     private final DialogCadastroConta dialogManutencaoConta;
     
     public DialogCadastroCliente(java.awt.Frame parent, boolean modal, IDialogCloseCallback callback) {
-        super(parent, modal);
+        super(parent);
         this.dialogManutencaoConta = new DialogCadastroConta(parent, true, this);
         this.clienteFacade = new ClientePersistenceFacade();
         this.contaFacade = new ContaPersistenceFacade();
@@ -46,7 +46,6 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
         
         this.inclusaoPessoaFisica = Boolean.TRUE;
         this.tabView.setEnabledAt(1, Boolean.FALSE);
-        this.tabView.setSelectedIndex(0);
         setVisible(Boolean.TRUE);
     }
     
@@ -97,7 +96,8 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
         }
         
         this.tabView.setEnabledAt(1, Boolean.TRUE);
-        this.tabView.setSelectedIndex(1);
+        this.tabView.setSelectedIndex(0);
+        
         atualizarTabelaContas();
         setVisible(Boolean.TRUE);
     }
@@ -162,6 +162,12 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
         tabelaContas = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        tabView.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                tabViewStateChanged(evt);
+            }
+        });
 
         lblNome.setText("Nome");
 
@@ -424,8 +430,8 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
     layout.setHorizontalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(layout.createSequentialGroup()
-            .addComponent(tabView, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(tabView)
+            .addGap(0, 0, 0))
     );
     layout.setVerticalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -440,30 +446,34 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        String cpf = this.edtCpf.getText();
-        Cliente cliente;
-        
-        if (this.inclusaoPessoaFisica) {
-            cliente = new ClientePessoaFisica(this.edtNome.getText(), 
-                    this.edtTelCelular.getText(), this.edtTelFixo.getText(), cpf);
-            ((ClientePessoaFisica)cliente).setReceberNotificacoesPorSms(this.chkSms.isSelected());
-            ((ClientePessoaFisica)cliente).setReceberNotificacoesPorWhatsapp(this.chkWhats.isSelected());
-        } else {
-            cliente = new ClientePessoaJuridica(this.edtNome.getText(), 
-                    this.edtTelCelular.getText(), this.edtTelFixo.getText(),
-                    this.edtCnpj.getText(), this.edtJms.getText());
+        try {
+            String cpf = this.edtCpf.getText();
+            Cliente cliente;
+
+            if (this.inclusaoPessoaFisica) {
+                cliente = new ClientePessoaFisica(this.edtNome.getText(), 
+                        this.edtTelCelular.getText(), this.edtTelFixo.getText(), cpf);
+                ((ClientePessoaFisica)cliente).setReceberNotificacoesPorSms(this.chkSms.isSelected());
+                ((ClientePessoaFisica)cliente).setReceberNotificacoesPorWhatsapp(this.chkWhats.isSelected());
+            } else {
+                cliente = new ClientePessoaJuridica(this.edtNome.getText(), 
+                        this.edtTelCelular.getText(), this.edtTelFixo.getText(),
+                        this.edtCnpj.getText(), this.edtJms.getText());
+            }
+
+            if (this.idClienteEdicao != null) {
+                cliente.setId(this.idClienteEdicao);
+            }
+
+            this.clienteFacade.save(cliente);
+            setVisible(Boolean.FALSE);
+            this.callback.execute(this.getName());
+
+            NotificationCenter.getInstance().showInfoNotification("Sucesso !", 
+                    String.format("O cliente %s foi salvo com sucesso.", cliente.getNome()));
+        } catch (Exception e) {
+            NotificationCenter.getInstance().showException(e);
         }
-        
-        if (this.idClienteEdicao != null) {
-            cliente.setId(this.idClienteEdicao);
-        }
-        
-        this.clienteFacade.save(cliente);
-        setVisible(Boolean.FALSE);
-        this.callback.execute(this.getName());
-        
-        NotificationCenter.getInstance().showInfoNotification("Sucesso !", 
-                String.format("O cliente %s foi salvo com sucesso.", cliente.getNome()));
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnBuscarContaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarContaActionPerformed
@@ -478,6 +488,10 @@ public class DialogCadastroCliente extends javax.swing.JDialog implements IDialo
         int linha = this.tabelaContas.rowAtPoint(evt.getPoint());
         this.dialogManutencaoConta.editarConta((((ContaTableModel) this.tabelaContas.getModel()).getObjectAt(linha)));
     }//GEN-LAST:event_tabelaContasMouseClicked
+
+    private void tabViewStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabViewStateChanged
+
+    }//GEN-LAST:event_tabViewStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscarConta;

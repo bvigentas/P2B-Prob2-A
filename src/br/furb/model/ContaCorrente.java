@@ -1,6 +1,7 @@
 package br.furb.model;
 
 
+import br.furb.model.servico.ServicoObserver;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,11 +20,12 @@ public class ContaCorrente extends AbstractPersistentPojo {
     private Cliente cliente;
     private double saldo = 0;
     private List<Operacao> operacoes = new ArrayList();
-    private List<ServicoObserver> servicosConfigurados;
+    private List<ServicoObserver> observers;
 
     public ContaCorrente(int numero, int agencia) {
         this.setNumero(numero);
         this.setAgencia(agencia);
+        this.observers = new ArrayList<>();
     }
 
     public String getChave(){
@@ -37,12 +39,14 @@ public class ContaCorrente extends AbstractPersistentPojo {
         Operacao oper = new Operacao(valor,this.getSaldo(),TipoOperacao.SAIDA,new Date(),this);
         operacoes.add(oper);
         this.saldo -= valor;
+        notifyObservers(oper);
     }
     
     public void depositar(double valor){
         Operacao oper = new Operacao(valor,this.getSaldo(),TipoOperacao.ENTRADA,new Date(),this);
         operacoes.add(oper);
         this.saldo += valor;
+        notifyObservers(oper);
     }    
     
     public void transferir(double valor, ContaCorrente destino){
@@ -53,12 +57,42 @@ public class ContaCorrente extends AbstractPersistentPojo {
         Operacao oper = new OperacaoTransferencia(valor,this.getSaldo(),TipoOperacao.SAIDA,new Date(),this,destino);
         operacoes.add(oper);
         this.saldo -= valor;
+        notifyObservers(oper);
     }   
     
     private void receberTransferencia(double valor, ContaCorrente origem){    
         Operacao oper = new OperacaoTransferencia(valor,this.getSaldo(),TipoOperacao.ENTRADA,new Date(),this,origem);
         operacoes.add(oper);
         this.saldo += valor;        
+        notifyObservers(oper);
+    }
+    
+    public void addObserver(ServicoObserver observer) {
+        for (ServicoObserver it : this.observers) {
+            if (it.getClass().equals(observer.getClass())) {
+                return;
+            }
+        }
+        this.observers.add(observer);
+    }
+    
+    public <T extends ServicoObserver> void removeObserver(Class<T> observerClass) {
+        for (int i = 0; i < observers.size(); i++) {
+            if (this.observers.get(i).getClass().equals(observerClass)) {
+                this.observers.remove(this.observers.get(i));
+                break;
+            }
+        }
+    }
+    
+    public List<ServicoObserver> getObservers() {
+        return this.observers;
+    }
+    
+    public void notifyObservers(Operacao operacao){
+        for(ServicoObserver observer : this.observers){
+            observer.execute(operacao);
+        }
     }
     
     public int getNumero() {
@@ -95,20 +129,6 @@ public class ContaCorrente extends AbstractPersistentPojo {
 
     public void setOperacoes(List<Operacao> operacoes) {
         this.operacoes = operacoes;
-    }
-
-    public List<ServicoObserver> getServicosConfigurados() {
-        return servicosConfigurados;
-    }
-
-    public void setServicosConfigurados(List<ServicoObserver> servicosConfigurados) {
-        this.servicosConfigurados = servicosConfigurados;
-    }
-    
-    public void notifyObservers(){
-        for(ServicoObserver observer : servicosConfigurados){
-            observer.execute(this);
-        }
     }
     
     @Override

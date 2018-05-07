@@ -1,7 +1,5 @@
 package br.furb.model;
 
-
-import br.furb.model.ContaCorrente;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -10,7 +8,8 @@ import java.util.Date;
  *
  * @author marcel
  */
-public class Operacao extends AbstractPersistentPojo {
+public class Operacao {
+    
     private double valor;
     private double saldoAnterior;
     private TipoOperacao tipo;
@@ -25,7 +24,6 @@ public class Operacao extends AbstractPersistentPojo {
         this.dataHora = dataHora;
         this.conta = conta;
     }
-
     
     public double getValor() {
         return valor;

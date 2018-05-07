@@ -8,7 +8,7 @@ import br.furb.view.tablemodel.ClienteTableModel;
  *
  * @author Ruan Schuartz Russi
  */
-public class PesquisaClientes extends javax.swing.JFrame implements IDialogCloseCallback {
+public class PesquisaClientes extends AbstractJFrame implements IDialogCloseCallback {
 
     private final DialogCadastroCliente dialogManutencao;
     private final ClientePersistenceFacade facade;

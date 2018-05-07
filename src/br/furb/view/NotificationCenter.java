@@ -17,6 +17,11 @@ public class NotificationCenter {
         return NotificationCenter.instance;
     }
     
+    public void showException(Exception e) {
+        showErrorNotification("Erro !!!",
+                e.getMessage());
+    }
+    
     public void showInfoNotification(String title, String message) {
         showNotification(title, message, JOptionPane.INFORMATION_MESSAGE);
     }

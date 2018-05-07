@@ -171,9 +171,11 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="chkServicoAnaliseInvestimento" min="-2" max="-2" attributes="0"/>
+                              <Component id="chkServicoOfertaFinanciamento" min="-2" max="-2" attributes="0"/>
                               <Component id="chkServicoBaixaAutomatica" min="-2" max="-2" attributes="0"/>
                               <Component id="chkServicoAnaliseFluxo" min="-2" max="-2" attributes="0"/>
                               <Component id="chkServicoOperacaoRealizada" min="-2" max="-2" attributes="0"/>
@@ -191,7 +193,11 @@
                           <Component id="chkServicoAnaliseFluxo" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="chkServicoBaixaAutomatica" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="350" max="32767" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="chkServicoOfertaFinanciamento" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="chkServicoAnaliseInvestimento" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="268" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -210,6 +216,16 @@
                 <Component class="javax.swing.JCheckBox" name="chkServicoBaixaAutomatica">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Baixa Autom&#xe1;tica"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="chkServicoAnaliseInvestimento">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Analise de Investimento"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="chkServicoOfertaFinanciamento">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Oferta de Financiamento"/>
                   </Properties>
                 </Component>
               </SubComponents>

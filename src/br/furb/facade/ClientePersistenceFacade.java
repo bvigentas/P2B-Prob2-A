@@ -12,6 +12,4 @@ public class ClientePersistenceFacade extends AbstractPersistenceFacade<Cliente,
     public ClientePersistenceFacade() {
         super(Cliente.class);
     }
-
-    
 }

@@ -1,7 +1,5 @@
 package br.furb.model;
 
-
-import br.furb.model.ContaCorrente;
 import java.util.Date;
 
 /**

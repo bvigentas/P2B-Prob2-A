@@ -17,8 +17,10 @@ public class ContaMemoryPersistence extends AbstractMemoryPersistence<ContaCorre
             return Boolean.TRUE;
         }
         
-        if (!Objects.equals(t.getCliente().getId(), filter.getCliente().getId())) {
-            return Boolean.FALSE;
+        if (filter.getCliente() != null) {
+            if (!Objects.equals(t.getCliente().getId(), filter.getCliente().getId())) {
+                return Boolean.FALSE;
+            }
         }
         
         if (!StringUtil.isNull(filter.getFilter())) {

@@ -4,18 +4,18 @@ import br.furb.facade.ClientePersistenceFacade;
 import br.furb.facade.ContaPersistenceFacade;
 import br.furb.model.Cliente;
 import br.furb.model.ContaCorrente;
-import br.furb.model.ServicoAnaliseFluxoObserver;
-import br.furb.model.ServicoBaixaAutomaticaObserver;
-import br.furb.model.ServicoNotificacaoObserver;
-import br.furb.model.ServicoObserver;
-import java.util.ArrayList;
-import java.util.List;
+import br.furb.model.servico.ServicoAnaliseFluxoObserver;
+import br.furb.model.servico.ServicoAnaliseInvestimentoObserver;
+import br.furb.model.servico.ServicoBaixaAutomaticaObserver;
+import br.furb.model.servico.ServicoNotificacaoObserver;
+import br.furb.model.servico.ServicoObserver;
+import br.furb.model.servico.ServicoOfertaFinanciamentoObserver;
 
 /**
  *
  * @author Ruan Schuartz Russi
  */
-public class DialogCadastroConta extends javax.swing.JDialog {
+public class DialogCadastroConta extends AbstractDialog {
 
     private final ContaPersistenceFacade contaFacade;
     private final ClientePersistenceFacade clienteFacade;
@@ -24,7 +24,7 @@ public class DialogCadastroConta extends javax.swing.JDialog {
     private Cliente cliente;
     
     public DialogCadastroConta(java.awt.Frame parent, boolean modal, IDialogCloseCallback callback) {
-        super(parent, modal);
+        super(parent);
         this.callback = callback;
         this.contaFacade = new ContaPersistenceFacade();
         this.clienteFacade = new ClientePersistenceFacade();
@@ -34,30 +34,47 @@ public class DialogCadastroConta extends javax.swing.JDialog {
     public void incluirConta(Cliente cliente) {
         this.cliente = cliente;
         this.idContaEdicao = null;
+        
         this.edtAgencia.setText(null);
         this.edtNumero.setText(null);
+        this.edtAgencia.setEnabled(Boolean.TRUE);
+        this.edtNumero.setEnabled(Boolean.TRUE);
+        
+        this.edtValor.setText(null);
+        this.edtNumConta.setText(null);
+        
         this.chkServicoAnaliseFluxo.setSelected(Boolean.FALSE);
         this.chkServicoBaixaAutomatica.setSelected(Boolean.FALSE);
         this.chkServicoOperacaoRealizada.setSelected(Boolean.FALSE);
+        this.chkServicoAnaliseInvestimento.setSelected(Boolean.FALSE);
+        this.chkServicoOfertaFinanciamento.setSelected(Boolean.FALSE);
         
         this.tabOperacoes.setEnabledAt(1, Boolean.FALSE);
         this.tabOperacoes.setEnabledAt(2, Boolean.FALSE);
-        this.tabOperacoes.setSelectedIndex(0);
+        
         setVisible(Boolean.TRUE);
     }
     
     public void editarConta(ContaCorrente contaCorrente) {
         this.cliente = contaCorrente.getCliente();
         this.idContaEdicao = contaCorrente.getId();
+        
         this.edtAgencia.setText(String.valueOf(contaCorrente.getAgencia()));
         this.edtNumero.setText(String.valueOf(contaCorrente.getNumero()));
+        this.edtAgencia.setEnabled(Boolean.FALSE);
+        this.edtNumero.setEnabled(Boolean.FALSE);
+        
+        this.edtValor.setText(null);
+        this.edtNumConta.setText(null);
         
         this.chkServicoAnaliseFluxo.setSelected(Boolean.FALSE);
         this.chkServicoBaixaAutomatica.setSelected(Boolean.FALSE);
         this.chkServicoOperacaoRealizada.setSelected(Boolean.FALSE);
+        this.chkServicoAnaliseInvestimento.setSelected(Boolean.FALSE);
+        this.chkServicoOfertaFinanciamento.setSelected(Boolean.FALSE);
         
-        if (contaCorrente.getServicosConfigurados() != null) {
-            for (ServicoObserver servico : contaCorrente.getServicosConfigurados()) {
+        if (contaCorrente.getObservers()!= null) {
+            for (ServicoObserver servico : contaCorrente.getObservers()) {
                 if (servico instanceof ServicoAnaliseFluxoObserver) {
                     this.chkServicoAnaliseFluxo.setSelected(Boolean.TRUE);
                 }
@@ -69,15 +86,54 @@ public class DialogCadastroConta extends javax.swing.JDialog {
                 if (servico instanceof ServicoNotificacaoObserver) {
                     this.chkServicoOperacaoRealizada.setSelected(Boolean.TRUE);
                 }
+                
+                if (servico instanceof ServicoAnaliseInvestimentoObserver) {
+                    this.chkServicoAnaliseInvestimento.setSelected(Boolean.TRUE);
+                }
+                
+                if (servico instanceof ServicoOfertaFinanciamentoObserver) {
+                    this.chkServicoOfertaFinanciamento.setSelected(Boolean.TRUE);
+                }
             }
         }
         
         this.tabOperacoes.setEnabledAt(1, Boolean.TRUE);
         this.tabOperacoes.setEnabledAt(2, Boolean.TRUE);
-        this.tabOperacoes.setSelectedIndex(1);
         setVisible(Boolean.TRUE);
     }
 
+    private void configurarServicos(ContaCorrente conta) {
+        if (this.chkServicoAnaliseFluxo.isSelected()) {
+            conta.addObserver(new ServicoAnaliseFluxoObserver());
+        } else {
+            conta.removeObserver(ServicoAnaliseFluxoObserver.class);
+        }
+        
+        if (this.chkServicoBaixaAutomatica.isSelected()) {
+            conta.addObserver(new ServicoBaixaAutomaticaObserver());
+        } else {
+            conta.removeObserver(ServicoBaixaAutomaticaObserver.class);
+        }
+        
+        if (this.chkServicoOperacaoRealizada.isSelected()) {
+            conta.addObserver(new ServicoNotificacaoObserver());
+        } else {
+            conta.removeObserver(ServicoNotificacaoObserver.class);
+        }
+        
+        if (this.chkServicoAnaliseInvestimento.isSelected()) {
+            conta.addObserver(new ServicoAnaliseInvestimentoObserver());
+        } else {
+            conta.removeObserver(ServicoAnaliseInvestimentoObserver.class);
+        }
+        
+        if (this.chkServicoOfertaFinanciamento.isSelected()) {
+            conta.addObserver(new ServicoOfertaFinanciamentoObserver());
+        } else {
+            conta.removeObserver(ServicoOfertaFinanciamentoObserver.class);
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -97,6 +153,8 @@ public class DialogCadastroConta extends javax.swing.JDialog {
         chkServicoOperacaoRealizada = new javax.swing.JCheckBox();
         chkServicoAnaliseFluxo = new javax.swing.JCheckBox();
         chkServicoBaixaAutomatica = new javax.swing.JCheckBox();
+        chkServicoAnaliseInvestimento = new javax.swing.JCheckBox();
+        chkServicoOfertaFinanciamento = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         btnSacar = new javax.swing.JButton();
         btnDepositar = new javax.swing.JButton();
@@ -182,6 +240,10 @@ public class DialogCadastroConta extends javax.swing.JDialog {
 
         chkServicoBaixaAutomatica.setText("Baixa Automática");
 
+        chkServicoAnaliseInvestimento.setText("Analise de Investimento");
+
+        chkServicoOfertaFinanciamento.setText("Oferta de Financiamento");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -189,6 +251,8 @@ public class DialogCadastroConta extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkServicoAnaliseInvestimento)
+                    .addComponent(chkServicoOfertaFinanciamento)
                     .addComponent(chkServicoBaixaAutomatica)
                     .addComponent(chkServicoAnaliseFluxo)
                     .addComponent(chkServicoOperacaoRealizada))
@@ -203,7 +267,11 @@ public class DialogCadastroConta extends javax.swing.JDialog {
                 .addComponent(chkServicoAnaliseFluxo)
                 .addGap(18, 18, 18)
                 .addComponent(chkServicoBaixaAutomatica)
-                .addContainerGap(350, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(chkServicoOfertaFinanciamento)
+                .addGap(18, 18, 18)
+                .addComponent(chkServicoAnaliseInvestimento)
+                .addContainerGap(268, Short.MAX_VALUE))
         );
 
         tabServicos.setViewportView(jPanel2);
@@ -299,41 +367,32 @@ public class DialogCadastroConta extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        ContaCorrente contaCorrente = 
-                new ContaCorrente(Integer.parseInt(this.edtNumero.getText()),
-                                  Integer.parseInt(this.edtAgencia.getText()));
-        
-        if (this.idContaEdicao != null) {
-            contaCorrente.setId(this.idContaEdicao);
-        } else {
-            this.cliente.addConta(contaCorrente);
-        }
-        
-        List<ServicoObserver> servicos = new ArrayList<>();
-        if (this.chkServicoAnaliseFluxo.isSelected()) {
-            servicos.add(new ServicoAnaliseFluxoObserver());
-        }
-        
-        if (this.chkServicoBaixaAutomatica.isSelected()) {
-            servicos.add(new ServicoBaixaAutomaticaObserver());
-        }
-        
-        if (this.chkServicoOperacaoRealizada.isSelected()) {
-            servicos.add(new ServicoNotificacaoObserver());
-        }
-        
-        contaCorrente.setServicosConfigurados(servicos);
-        
-        this.contaFacade.save(contaCorrente);
-        if (this.idContaEdicao != null) {
+        try {
+            ContaCorrente contaCorrente;
+
+            if (this.idContaEdicao != null) {
+                contaCorrente = this.contaFacade.findById(this.idContaEdicao);
+                this.cliente.getContas().put(contaCorrente.getChave(), contaCorrente);
+            } else {
+                contaCorrente = new ContaCorrente(Integer.parseInt(this.edtNumero.getText()),
+                                      Integer.parseInt(this.edtAgencia.getText()));
+                this.cliente.addConta(contaCorrente);
+            }
+
+            configurarServicos(contaCorrente);
+
+            this.contaFacade.save(contaCorrente);
             this.clienteFacade.save(cliente);
+
+            setVisible(Boolean.FALSE);
+            this.callback.execute(this.getName());
+
+            NotificationCenter.getInstance().showInfoNotification("Sucesso !", 
+                    String.format("A conta %s foi salva com sucesso.", 
+                            String.valueOf(contaCorrente.getNumero())));
+        } catch (Exception e) {
+            NotificationCenter.getInstance().showException(e);
         }
-        setVisible(Boolean.FALSE);
-        this.callback.execute(this.getName());
-        
-        NotificationCenter.getInstance().showInfoNotification("Sucesso !", 
-                String.format("A conta %s foi salva com sucesso.", 
-                        String.valueOf(contaCorrente.getNumero())));
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -341,24 +400,59 @@ public class DialogCadastroConta extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnSacarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacarActionPerformed
-        executarServicos();
-    }//GEN-LAST:event_btnSacarActionPerformed
+        try {
+            ContaCorrente contaCorrente = this.contaFacade.findById(this.idContaEdicao);
+            contaCorrente.sacar(Double.parseDouble(this.edtValor.getText()));
+            this.contaFacade.save(contaCorrente);
 
-    private void executarServicos(){
-        ContaCorrente contaCorrente = this.contaFacade.findById(this.idContaEdicao);
-        contaCorrente.notifyObservers();
-    }
+            setVisible(Boolean.FALSE);
+            this.callback.execute(this.getName());
+            
+            NotificationCenter.getInstance().showInfoNotification("Sucesso !", 
+                    String.format("Saque de %s realizado. Os servicos configurados serao executados.", 
+                            this.edtValor.getText()));
+        } catch (Exception e) {
+            NotificationCenter.getInstance().showException(e);
+        }
+    }//GEN-LAST:event_btnSacarActionPerformed
     
     private void btnDepositarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepositarActionPerformed
-        executarServicos();
+        try {
+            ContaCorrente contaCorrente = this.contaFacade.findById(this.idContaEdicao);
+            contaCorrente.depositar(Double.parseDouble(this.edtValor.getText()));
+            this.contaFacade.save(contaCorrente);
+
+            setVisible(Boolean.FALSE);
+            this.callback.execute(this.getName());
+            
+            NotificationCenter.getInstance().showInfoNotification("Sucesso !", 
+                    String.format("Deposito de %s realizado. Os servicos configurados serao executados.", 
+                            this.edtValor.getText()));
+        } catch (Exception e) {
+            NotificationCenter.getInstance().showException(e);
+        }
     }//GEN-LAST:event_btnDepositarActionPerformed
 
     private void btnTransferirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferirActionPerformed
-        executarServicos();
+        try {
+            ContaCorrente contaCorrente = this.contaFacade.findById(this.idContaEdicao);
+            ContaCorrente destino = this.contaFacade
+                    .buscarContaPorNumero(Integer.valueOf(this.edtNumConta.getText()));
+            contaCorrente.transferir(Double.parseDouble(this.edtValor.getText()), destino);
+            this.contaFacade.save(contaCorrente); 
+
+            setVisible(Boolean.FALSE);
+            this.callback.execute(this.getName());
+            
+            NotificationCenter.getInstance().showInfoNotification("Sucesso !", 
+                    String.format("Transferencia de %s realizado para a conta. Os servicos configurados serao executados.", 
+                            this.edtValor.getText(), this.edtNumConta.getText()));
+        } catch (Exception e) {
+            NotificationCenter.getInstance().showException(e);
+        }
     }//GEN-LAST:event_btnTransferirActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -368,7 +462,9 @@ public class DialogCadastroConta extends javax.swing.JDialog {
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnTransferir;
     private javax.swing.JCheckBox chkServicoAnaliseFluxo;
+    private javax.swing.JCheckBox chkServicoAnaliseInvestimento;
     private javax.swing.JCheckBox chkServicoBaixaAutomatica;
+    private javax.swing.JCheckBox chkServicoOfertaFinanciamento;
     private javax.swing.JCheckBox chkServicoOperacaoRealizada;
     private javax.swing.JTextField edtAgencia;
     private javax.swing.JTextField edtNumConta;

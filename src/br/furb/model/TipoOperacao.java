@@ -5,6 +5,6 @@ package br.furb.model;
  *
  * @author marcel
  */
-enum TipoOperacao {
+public enum TipoOperacao {
     SAIDA, ENTRADA;
 }

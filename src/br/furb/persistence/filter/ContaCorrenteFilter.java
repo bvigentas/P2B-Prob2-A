@@ -10,6 +10,8 @@ public class ContaCorrenteFilter extends AbstractPersistenceFilter {
     
     private Cliente cliente;
 
+    public ContaCorrenteFilter() {}
+    
     public ContaCorrenteFilter(Cliente cliente) {
         this.cliente = cliente;
     }
