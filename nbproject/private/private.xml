@@ -3,14 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/model/servico/ServicoObserver.java</file>
+            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/view/IDialogCloseCallback.java</file>
+            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/model/servico/ServicoNotificacaoObserver.java</file>
+            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/view/AbstractJFrame.java</file>
+            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/Mapeamento.txt</file>
             <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/view/DialogCadastroConta.java</file>
-            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/config/main/Main.java</file>
-            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/model/Cliente.java</file>
-            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/view/NotificationCenter.java</file>
+            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/view/AbstractDialog.java</file>
             <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/view/DialogCadastroCliente.java</file>
-            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/model/ServicoAnaliseFluxoObserver.java</file>
+            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/model/servico/ServicoAnaliseInvestimentoObserver.java</file>
             <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/view/PesquisaClientes.java</file>
-            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/model/ContaCorrente.java</file>
+            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/model/servico/ServicoBaixaAutomaticaObserver.java</file>
+            <file>file:/home/robot/furb/programacao2/P2B-Prob2-A/src/br/furb/model/servico/ServicoOfertaFinanciamentoObserver.java</file>
         </group>
     </open-files>
 </project-private>
