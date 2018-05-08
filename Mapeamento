@@ -1,4 +1,9 @@
-Classe que representa o `Subject` = ContaCorrente.
+Observer - Classe que representa o `Subject` = ContaCorrente.
+           Classes que representam os observers: Interface = ServicoObserver. Implementações concretas = ServicoAnaliseFluxoObserver, 
+           ServicoAnaliseInvestimentoObserver, ServicoBaixaAutomaticaObserver, ServicoNotificacaoObserver e ServicoOfertaFinanciamentoObserver.
 
-Classes que representam os observers: Interface = ServicoObserver. Implementações concretas = ServicoAnaliseFluxoObserver, 
-ServicoAnaliseInvestimentoObserver, ServicoBaixaAutomaticaObserver, ServicoNotificacaoObserver e ServicoOfertaFinanciamentoObserver.
+Façade - Classes: ClientePersistenceFacade e ContaPersistenceFacade.
+
+Factory - Classes ConcreteCreator: MemoryPersistenceFactory
+          Classes ConcreteProduct: ContaMemoryPersistence e ClienteMemoryPersistence.
+          Classes Product: IPersistenceFactory.
