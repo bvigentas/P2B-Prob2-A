@@ -1,4 +1,4 @@
+Classe que representa o `Subject` = ContaCorrente.
 
-Classe obervadora:
-  
-Classe observada:
+Classes que representam os observers: Interface = ServicoObserver. Implementações concretas = ServicoAnaliseFluxoObserver, 
+ServicoAnaliseInvestimentoObserver, ServicoBaixaAutomaticaObserver, ServicoNotificacaoObserver e ServicoOfertaFinanciamentoObserver.
