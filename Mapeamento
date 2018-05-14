@@ -1,4 +1,4 @@
---> Prof. marcel: Parabéns! Bela solução.
+--> Prof. Marcel: Parabéns! Bela solução.
 
 Observer - Classe que representa o `Subject` = ContaCorrente.
            Classes que representam os observers: Interface = ServicoObserver. Implementações concretas = ServicoAnaliseFluxoObserver, 
@@ -9,3 +9,9 @@ Façade - Classes: ClientePersistenceFacade e ContaPersistenceFacade.
 Factory - Classes ConcreteCreator: MemoryPersistenceFactory
           Classes ConcreteProduct: ContaMemoryPersistence e ClienteMemoryPersistence.
           Classes Product: IPersistenceFactory.
+
+--> Prof. Marcel: Cada problema recebe uma nota de 0,0 a 3,0.
+A soma dos 3 problemas mais a avaliação sobre a colaboração no trabalho em equipe define a nota de cada aluno.
+Problema - Notas Equipe A
+1	3,0
+2	3,0
